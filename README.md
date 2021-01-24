@@ -3,6 +3,8 @@ Send a count of Pull-Request as custom metrics to Datadog
 
 [![](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggTFJcbiAgICBBW0dpdEh1Yl1cbiAgICBCW2RhdGFkb2ctZ2l0aHViLXByXVxuICAgIENbRGF0YWRvZ11cbiAgICBCIC0tPnxnZXQgUHVsbCBSZXF1ZXN0c3wgQVxuICAgIEIgLS0-fHNuZWQgYSBjb3VudCBvZiBQdWxsIFJlcXVlc3RzIGFzIGN1c3RvbSBtZXRyaWNzfCBDIiwibWVybWFpZCI6e30sInVwZGF0ZUVkaXRvciI6ZmFsc2V9)](https://mermaid-js.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoiZ3JhcGggTFJcbiAgICBBW0dpdEh1Yl1cbiAgICBCW2RhdGFkb2ctZ2l0aHViLXByXVxuICAgIENbRGF0YWRvZ11cbiAgICBCIC0tPnxnZXQgUHVsbCBSZXF1ZXN0c3wgQVxuICAgIEIgLS0-fHNuZWQgYSBjb3VudCBvZiBQdWxsIFJlcXVlc3RzIGFzIGN1c3RvbSBtZXRyaWNzfCBDIiwibWVybWFpZCI6e30sInVwZGF0ZUVkaXRvciI6ZmFsc2V9)
 
+![Example in Datadog](image.png)
+
 ## Preparation
 
 Copy .envrc and lod it.
