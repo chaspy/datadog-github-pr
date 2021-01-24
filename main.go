@@ -50,6 +50,9 @@ func run() error {
 	client := github.NewClient(tc)
 
 	prs, _, err := client.PullRequests.List(ctx, "quipper", "kubernetes-clusters", nil)
+	if err != nil {
+		return fmt.Errorf("failed to get GitHub Pull Requests: %w", err)
+	}
 
 	var prinfos []PR
 
