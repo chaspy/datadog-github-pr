@@ -1,3 +1,4 @@
 export DATADOG_API_KEY="secret-datadog-api-key
 export DATADOG_APP_KEY="secret-datadog-app-key"
 export GITHUB_TOKEN="secret-github-personal-token"
+export GITHUB_REPOSITORIES="chaspy/datadog-github-pr,chaspy/favsearch"
