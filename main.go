@@ -69,7 +69,7 @@ func run() error {
 	const timeDifferencesToJapan = +9 * 60 * 60
 	tz := time.FixedZone("JST", timeDifferencesToJapan)
 
-	var customMetrics []datadog.Metric
+	customMetrics := []datadog.Metric{}
 	now := time.Now().In(tz)
 	nowF := float64(now.Unix())
 
