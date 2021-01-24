@@ -40,17 +40,9 @@ func run() error {
 		return fmt.Errorf("failed to read Datadog Config: %w", err)
 	}
 
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: githubToken},
-	)
-	ctx := context.Background()
-	tc := oauth2.NewClient(ctx, ts)
-
-	client := github.NewClient(tc)
-
-	prs, _, err := client.PullRequests.List(ctx, "quipper", "kubernetes-clusters", nil)
+	prs, err := getPullRequests(githubToken)
 	if err != nil {
-		return fmt.Errorf("failed to get GitHub Pull Requests: %w", err)
+		return fmt.Errorf("failed to get PullRequests: %w", err)
 	}
 
 	prInfos := []PR{}
@@ -141,4 +133,21 @@ func readGithubConfig() (string, error) {
 	}
 
 	return githubToken, nil
+}
+
+func getPullRequests(githubToken string) ([]*github.PullRequest,error){
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: githubToken},
+	)
+	ctx := context.Background()
+	tc := oauth2.NewClient(ctx, ts)
+
+	client := github.NewClient(tc)
+
+	prs, _, err := client.PullRequests.List(ctx, "quipper", "kubernetes-clusters", nil)
+	if err != nil {
+		return nil,fmt.Errorf("failed to get GitHub Pull Requests: %w", err)
+	}
+
+    return prs, nil
 }
