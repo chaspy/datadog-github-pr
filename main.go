@@ -17,8 +17,6 @@ type PR struct {
 	Number             *int
 	Labels             []*github.Label
 	User               *string
-	Assignee           *string
-	Assignees          []*string
 	RequestedReviewers []*github.User
 }
 
