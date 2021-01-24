@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/google/go-github/github"
@@ -38,7 +39,14 @@ func run() error {
 		return fmt.Errorf("failed to read Datadog Config: %w", err)
 	}
 
-	prs, err := getPullRequests(githubToken)
+	repositories, err := getRepositories()
+	if err != nil {
+		return fmt.Errorf("failed to get GitHub repository name: %w", err)
+	}
+
+	repositoryList := parseRepositories(repositories)
+
+	prs, err := getPullRequests(githubToken, repositoryList)
 	if err != nil {
 		return fmt.Errorf("failed to get PullRequests: %w", err)
 	}
@@ -90,7 +98,7 @@ func readGithubConfig() (string, error) {
 	return githubToken, nil
 }
 
-func getPullRequests(githubToken string) ([]*github.PullRequest, error) {
+func getPullRequests(githubToken string, githubRepositories []string) ([]*github.PullRequest, error) {
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: githubToken},
 	)
@@ -99,12 +107,34 @@ func getPullRequests(githubToken string) ([]*github.PullRequest, error) {
 
 	client := github.NewClient(tc)
 
-	prs, _, err := client.PullRequests.List(ctx, "quipper", "kubernetes-clusters", nil)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get GitHub Pull Requests: %w", err)
+	prs := []*github.PullRequest{}
+
+	for _, githubRepository := range githubRepositories {
+		repo := strings.Split(githubRepository, "/")
+		org := repo[0]
+		name := repo[1]
+		prsInRepo, _, err := client.PullRequests.List(ctx, org, name, nil)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get GitHub Pull Requests: %w", err)
+		}
+
+		prs = append(prs, prsInRepo...)
 	}
 
 	return prs, nil
+}
+
+func getRepositories() (string, error) {
+	githubRepositories := os.Getenv("GITHUB_REPOSITORIES")
+	if len(githubRepositories) == 0 {
+		return "", fmt.Errorf("missing environment variable: GITHUB_REPOSITORIES")
+	}
+
+	return githubRepositories, nil
+}
+
+func parseRepositories(repositories string) []string {
+	return strings.Split(repositories, ",")
 }
 
 func getPRInfos(prs []*github.PullRequest) []PR {
