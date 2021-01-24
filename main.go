@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"github.com/google/go-github/github"
 	"github.com/zorkian/go-datadog-api"
+	"golang.org/x/oauth2"
 	"log"
 	"os"
 	"strconv"
@@ -23,6 +26,22 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("failed to read Datadog Config: %w", err)
 	}
+
+	githubToken, err := readGithubConfig()
+	if err != nil {
+		return fmt.Errorf("failed to read Datadog Config: %w", err)
+	}
+
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: githubToken},
+	)
+	tc := oauth2.NewClient(oauth2.NoContext, ts)
+	ctx := context.Background()
+
+	client := github.NewClient(tc)
+
+	repos, _, err := client.Repositories.List(ctx, "chaspy", nil)
+	fmt.Printf("strArray[%%v] -> %v\n", repos)
 
 	ddClient := datadog.NewClient(apikey, appkey)
 
@@ -75,4 +94,13 @@ func sendCustomMetric(ddClient *datadog.Client, customMetrics []datadog.Metric) 
 	}
 	log.Printf("[Info] sent custom metrics. Count: %v", len(customMetrics))
 	return nil
+}
+
+func readGithubConfig() (string, error) {
+	githubToken := os.Getenv("GITHUB_TOKEN")
+	if len(githubToken) == 0 {
+		return  "", fmt.Errorf("missing environment variable: GITHUB_TOKEN")
+	}
+
+	return githubToken, nil
 }
