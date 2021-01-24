@@ -21,12 +21,12 @@ func main() {
 
 func run() error {
 	type PR struct {
-		Number              *int
-		Labels              []*github.Label
-		User                *string
-		Assignee            *string
-		Assignees           []*string
-		RequestedReviewers  []*github.User
+		Number             *int
+		Labels             []*github.Label
+		User               *string
+		Assignee           *string
+		Assignees          []*string
+		RequestedReviewers []*github.User
 	}
 
 	const timeoutsecond = 10
@@ -55,9 +55,9 @@ func run() error {
 
 	for _, pr := range prs {
 		prinfos = append(prinfos, PR{
-			Number: pr.Number,
-			Labels: pr.Labels,
-			User:  pr.User.Login,
+			Number:             pr.Number,
+			Labels:             pr.Labels,
+			User:               pr.User.Login,
 			RequestedReviewers: pr.RequestedReviewers,
 		})
 	}
@@ -83,12 +83,12 @@ func run() error {
 		labelsTag = []string{}
 		reviewersTag = []string{}
 
-		for _, label := range prinfo.Labels{
-			labelsTag = append(labelsTag,"label:" + *label.Name)
+		for _, label := range prinfo.Labels {
+			labelsTag = append(labelsTag, "label:"+*label.Name)
 		}
 
-		for _, reviewer := range prinfo.RequestedReviewers{
-			reviewersTag = append(reviewersTag,"reviewer:" + *reviewer.Login)
+		for _, reviewer := range prinfo.RequestedReviewers {
+			reviewersTag = append(reviewersTag, "reviewer:"+*reviewer.Login)
 		}
 
 		labelAndReviewer := append(labelsTag, reviewersTag...)
@@ -99,14 +99,13 @@ func run() error {
 				{datadog.Float64(nowF), datadog.Float64(countf)},
 			},
 			Type: datadog.String("gauge"),
-			Tags: append([]string{"number:" + strconv.Itoa(*prinfo.Number),"author:" + *prinfo.User, "repo:" + "quipper/kubernetes-clusters"}, labelAndReviewer...),
+			Tags: append([]string{"number:" + strconv.Itoa(*prinfo.Number), "author:" + *prinfo.User, "repo:" + "quipper/kubernetes-clusters"}, labelAndReviewer...),
 		})
 	}
 
-		if err := sendCustomMetric(ddClient, customMetrics); err != nil {
-			return fmt.Errorf("failed to send custom metrics: %w", err)
-		}
-
+	if err := sendCustomMetric(ddClient, customMetrics); err != nil {
+		return fmt.Errorf("failed to send custom metrics: %w", err)
+	}
 
 	return nil
 }
@@ -136,7 +135,7 @@ func sendCustomMetric(ddClient *datadog.Client, customMetrics []datadog.Metric) 
 func readGithubConfig() (string, error) {
 	githubToken := os.Getenv("GITHUB_TOKEN")
 	if len(githubToken) == 0 {
-		return  "", fmt.Errorf("missing environment variable: GITHUB_TOKEN")
+		return "", fmt.Errorf("missing environment variable: GITHUB_TOKEN")
 	}
 
 	return githubToken, nil
