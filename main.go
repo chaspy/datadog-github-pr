@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/google/go-github/github"
-	"github.com/zorkian/go-datadog-api"
-	"golang.org/x/oauth2"
 	"log"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/google/go-github/github"
+	"github.com/zorkian/go-datadog-api"
+	"golang.org/x/oauth2"
 )
 
 func main() {
