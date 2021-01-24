@@ -135,7 +135,7 @@ func readGithubConfig() (string, error) {
 	return githubToken, nil
 }
 
-func getPullRequests(githubToken string) ([]*github.PullRequest,error){
+func getPullRequests(githubToken string) ([]*github.PullRequest, error) {
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: githubToken},
 	)
@@ -146,8 +146,8 @@ func getPullRequests(githubToken string) ([]*github.PullRequest,error){
 
 	prs, _, err := client.PullRequests.List(ctx, "quipper", "kubernetes-clusters", nil)
 	if err != nil {
-		return nil,fmt.Errorf("failed to get GitHub Pull Requests: %w", err)
+		return nil, fmt.Errorf("failed to get GitHub Pull Requests: %w", err)
 	}
 
-    return prs, nil
+	return prs, nil
 }
