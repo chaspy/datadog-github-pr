@@ -16,6 +16,6 @@ RUN go build \
 
 FROM alpine:3.13.0 as runner
 
-COPY --from=builder /go/bin/main /app/main
+COPY --from=builder /go/bin/datadog-github-pr /app/datadog-github-pr
 
 ENTRYPOINT ["/app/datadog-github-pr"]
