@@ -56,10 +56,9 @@ func run() error {
 	now := time.Now().In(tz)
 	nowF := float64(now.Unix())
 
-	count := "1"
-	countf, err := strconv.ParseFloat(count, 64)
+	countf, err := strconv.ParseFloat("1", 64)
 	if err != nil {
-		return fmt.Errorf("failed to parse. count %v, error %w", count, err)
+		return fmt.Errorf("failed to parse. error %w", err)
 	}
 
 	var labelsTag []string
