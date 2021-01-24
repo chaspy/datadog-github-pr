@@ -52,8 +52,6 @@ func run() error {
 	prs, _, err := client.PullRequests.List(ctx, "quipper", "kubernetes-clusters", nil)
 	fmt.Printf("%v\n", *prs[0].Labels[0].Name)
 	fmt.Printf("%v\n", *prs[0].User.Login)
-//	fmt.Printf("%v\n", *prs[0].Assignee)
-//	fmt.Printf("%v\n", *prs[0].Assignees[0])
 	fmt.Printf("%v\n", *prs[0].RequestedReviewers[0].Login)
 
 	var prinfos []PR
