@@ -29,8 +29,6 @@ func run() error {
 		RequestedReviewers []*github.User
 	}
 
-	const timeoutsecond = 10
-
 	apikey, appkey, err := readDatadogConfig()
 	if err != nil {
 		return fmt.Errorf("failed to read Datadog Config: %w", err)
