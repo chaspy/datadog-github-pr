@@ -53,7 +53,7 @@ func run() error {
 		return fmt.Errorf("failed to get GitHub Pull Requests: %w", err)
 	}
 
-	var prinfos []PR
+	prinfos := []PR{}
 
 	for _, pr := range prs {
 		prinfos = append(prinfos, PR{
