@@ -53,10 +53,10 @@ func run() error {
 		return fmt.Errorf("failed to get GitHub Pull Requests: %w", err)
 	}
 
-	prinfos := []PR{}
+	prInfos := []PR{}
 
 	for _, pr := range prs {
-		prinfos = append(prinfos, PR{
+		prInfos = append(prInfos, PR{
 			Number:             pr.Number,
 			Labels:             pr.Labels,
 			User:               pr.User.Login,
@@ -81,15 +81,15 @@ func run() error {
 
 	var labelsTag []string
 	var reviewersTag []string
-	for _, prinfo := range prinfos {
+	for _, prInfo := range prInfos {
 		labelsTag = []string{}
 		reviewersTag = []string{}
 
-		for _, label := range prinfo.Labels {
+		for _, label := range prInfo.Labels {
 			labelsTag = append(labelsTag, "label:"+*label.Name)
 		}
 
-		for _, reviewer := range prinfo.RequestedReviewers {
+		for _, reviewer := range prInfo.RequestedReviewers {
 			reviewersTag = append(reviewersTag, "reviewer:"+*reviewer.Login)
 		}
 
@@ -101,7 +101,7 @@ func run() error {
 				{datadog.Float64(nowF), datadog.Float64(countf)},
 			},
 			Type: datadog.String("gauge"),
-			Tags: append([]string{"number:" + strconv.Itoa(*prinfo.Number), "author:" + *prinfo.User, "repo:" + "quipper/kubernetes-clusters"}, labelAndReviewer...),
+			Tags: append([]string{"number:" + strconv.Itoa(*prInfo.Number), "author:" + *prInfo.User, "repo:" + "quipper/kubernetes-clusters"}, labelAndReviewer...),
 		})
 	}
 
