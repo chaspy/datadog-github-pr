@@ -40,8 +40,8 @@ func run() error {
 
 	client := github.NewClient(tc)
 
-	repos, _, err := client.Repositories.List(ctx, "chaspy", nil)
-	fmt.Printf("strArray[%%v] -> %v\n", repos)
+	prs, _, err := client.PullRequests.List(ctx, "quipper", "kubernetes-clusters", nil)
+	fmt.Printf("%v\n", *prs[0].Number)
 
 	ddClient := datadog.NewClient(apikey, appkey)
 
