@@ -50,9 +50,6 @@ func run() error {
 	client := github.NewClient(tc)
 
 	prs, _, err := client.PullRequests.List(ctx, "quipper", "kubernetes-clusters", nil)
-	fmt.Printf("%v\n", *prs[0].Labels[0].Name)
-	fmt.Printf("%v\n", *prs[0].User.Login)
-	fmt.Printf("%v\n", *prs[0].RequestedReviewers[0].Login)
 
 	var prinfos []PR
 
@@ -64,8 +61,6 @@ func run() error {
 			RequestedReviewers: pr.RequestedReviewers,
 		})
 	}
-
-	fmt.Println("%v",prinfos)
 
 	ddClient := datadog.NewClient(apikey, appkey)
 
@@ -82,14 +77,22 @@ func run() error {
 		return fmt.Errorf("failed to parse. count %v, error %w", count, err)
 	}
 
+	var labelsTag []string
+//	var reviewersTag string
 	for _, prinfo := range prinfos {
+		labelsTag = []string{}
+
+		for _, label := range prinfo.Labels{
+			labelsTag = append(labelsTag,"label:" + *label.Name)
+		}
+
 		customMetrics = append(customMetrics, datadog.Metric{
 			Metric: datadog.String("datadog.custom.github.pr.count"),
 			Points: []datadog.DataPoint{
 				{datadog.Float64(nowF), datadog.Float64(countf)},
 			},
 			Type: datadog.String("gauge"),
-			Tags: []string{"number:" + strconv.Itoa(*prinfo.Number),"author:" + *prinfo.User, "repo:" + "quipper/kubernetes-clusters"},
+			Tags: append([]string{"number:" + strconv.Itoa(*prinfo.Number),"author:" + *prinfo.User, "repo:" + "quipper/kubernetes-clusters"}, labelsTag...),
 		})
 	}
 
