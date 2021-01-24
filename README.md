@@ -32,5 +32,5 @@ Get the binary file from [Releases](https://github.com/chaspy/datadog-github-pr/
 ### Docker
 
 ```
-$ docker run -e DATADOG_API_KEY="${DATADOG_API_KEY}" -e DATADOG_APP_KEY="${DATADOG_APP_KEY}" -e GITHUB_TOKEN="${GITHUB_TOKEN}" -e GITHUB_REPOSITORIES="${GITHUB_REPOSITORIES}" chaspy/datadog-github-pr:v0.1.0
+$ docker run -e DATADOG_API_KEY="${DATADOG_API_KEY}" -e DATADOG_APP_KEY="${DATADOG_APP_KEY}" -e GITHUB_TOKEN="${GITHUB_TOKEN}" -e GITHUB_REPOSITORIES="${GITHUB_REPOSITORIES}" chaspy/datadog-github-pr:v0.1.1
 ```
