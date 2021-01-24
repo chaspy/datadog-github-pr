@@ -78,13 +78,20 @@ func run() error {
 	}
 
 	var labelsTag []string
-//	var reviewersTag string
+	var reviewersTag []string
 	for _, prinfo := range prinfos {
 		labelsTag = []string{}
+		reviewersTag = []string{}
 
 		for _, label := range prinfo.Labels{
 			labelsTag = append(labelsTag,"label:" + *label.Name)
 		}
+
+		for _, reviewer := range prinfo.RequestedReviewers{
+			reviewersTag = append(reviewersTag,"reviewer:" + *reviewer.Login)
+		}
+
+		labelAndReviewer := append(labelsTag, reviewersTag...)
 
 		customMetrics = append(customMetrics, datadog.Metric{
 			Metric: datadog.String("datadog.custom.github.pr.count"),
@@ -92,7 +99,7 @@ func run() error {
 				{datadog.Float64(nowF), datadog.Float64(countf)},
 			},
 			Type: datadog.String("gauge"),
-			Tags: append([]string{"number:" + strconv.Itoa(*prinfo.Number),"author:" + *prinfo.User, "repo:" + "quipper/kubernetes-clusters"}, labelsTag...),
+			Tags: append([]string{"number:" + strconv.Itoa(*prinfo.Number),"author:" + *prinfo.User, "repo:" + "quipper/kubernetes-clusters"}, labelAndReviewer...),
 		})
 	}
 
