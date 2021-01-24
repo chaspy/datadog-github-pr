@@ -19,6 +19,7 @@ type PR struct {
 	Labels             []*github.Label
 	User               *string
 	RequestedReviewers []*github.User
+	Repo               string
 }
 
 func main() {
@@ -141,11 +142,14 @@ func getPRInfos(prs []*github.PullRequest) []PR {
 	prInfos := []PR{}
 
 	for _, pr := range prs {
+		repos := strings.Split(*pr.URL, "/")
+
 		prInfos = append(prInfos, PR{
 			Number:             pr.Number,
 			Labels:             pr.Labels,
 			User:               pr.User.Login,
 			RequestedReviewers: pr.RequestedReviewers,
+			Repo:               repos[4] + "/" + repos[5],
 		})
 	}
 
@@ -187,7 +191,7 @@ func generateCustomMetrics(prInfos []PR) ([]datadog.Metric, error) {
 				{datadog.Float64(nowF), datadog.Float64(countf)},
 			},
 			Type: datadog.String("gauge"),
-			Tags: append([]string{"number:" + strconv.Itoa(*prInfo.Number), "author:" + *prInfo.User, "repo:" + "quipper/kubernetes-clusters"}, labelAndReviewer...),
+			Tags: append([]string{"number:" + strconv.Itoa(*prInfo.Number), "author:" + *prInfo.User, "repo:" + prInfo.Repo}, labelAndReviewer...),
 		})
 	}
 
