@@ -20,6 +20,15 @@ func main() {
 }
 
 func run() error {
+	type PR struct {
+		Number              *int
+		Labels              []*github.Label
+		User                *string
+		Assignee            *string
+		Assignees           []*string
+		RequestedReviewers  []*github.User
+	}
+
 	const timeoutsecond = 10
 
 	apikey, appkey, err := readDatadogConfig()
@@ -41,7 +50,24 @@ func run() error {
 	client := github.NewClient(tc)
 
 	prs, _, err := client.PullRequests.List(ctx, "quipper", "kubernetes-clusters", nil)
-	fmt.Printf("%v\n", *prs[0].Number)
+	fmt.Printf("%v\n", *prs[0].Labels[0].Name)
+	fmt.Printf("%v\n", *prs[0].User.Login)
+//	fmt.Printf("%v\n", *prs[0].Assignee)
+//	fmt.Printf("%v\n", *prs[0].Assignees[0])
+	fmt.Printf("%v\n", *prs[0].RequestedReviewers[0].Login)
+
+	var prinfos []PR
+
+	for _, pr := range prs {
+		prinfos = append(prinfos, PR{
+			Number: pr.Number,
+			Labels: pr.Labels,
+			User:  pr.User.Login,
+			RequestedReviewers: pr.RequestedReviewers,
+		})
+	}
+
+	fmt.Println("%v",prinfos)
 
 	ddClient := datadog.NewClient(apikey, appkey)
 
@@ -58,18 +84,21 @@ func run() error {
 		return fmt.Errorf("failed to parse. count %v, error %w", count, err)
 	}
 
-	customMetrics = append(customMetrics, datadog.Metric{
-		Metric: datadog.String("datadog.custom.github.pr.count"),
-		Points: []datadog.DataPoint{
-			{datadog.Float64(nowF), datadog.Float64(countf)},
-		},
-		Type: datadog.String("gauge"),
-		Tags: []string{"author:" + "chaspy", "repo:" + "chaspy/datadog-github-pr"},
-	})
-
-	if err := sendCustomMetric(ddClient, customMetrics); err != nil {
-		return fmt.Errorf("failed to send custom metrics: %w", err)
+	for _, prinfo := range prinfos {
+		customMetrics = append(customMetrics, datadog.Metric{
+			Metric: datadog.String("datadog.custom.github.pr.count"),
+			Points: []datadog.DataPoint{
+				{datadog.Float64(nowF), datadog.Float64(countf)},
+			},
+			Type: datadog.String("gauge"),
+			Tags: []string{"number:" + strconv.Itoa(*prinfo.Number),"author:" + *prinfo.User, "repo:" + "quipper/kubernetes-clusters"},
+		})
 	}
+
+		if err := sendCustomMetric(ddClient, customMetrics); err != nil {
+			return fmt.Errorf("failed to send custom metrics: %w", err)
+		}
+
 
 	return nil
 }
