@@ -43,8 +43,8 @@ func run() error {
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: githubToken},
 	)
-	tc := oauth2.NewClient(oauth2.NoContext, ts)
 	ctx := context.Background()
+	tc := oauth2.NewClient(ctx, ts)
 
 	client := github.NewClient(tc)
 
