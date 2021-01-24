@@ -1,0 +1,7 @@
+github.com/Datadog/go-datadog-api v0.0.0-20180412144801-1a106981ce7e h1:Qavi9jY90fN7ZjhJwpM6uMkH7Nq1KvKQeiuOK+8ORoc=
+github.com/Datadog/go-datadog-api v0.0.0-20180412144801-1a106981ce7e/go.mod h1:jfvR+hNbkncLS921WgkR3tXzwQuAbta6EMGVsEFN6QM=
+github.com/cenkalti/backoff v1.1.0 h1:QnvVp8ikKCDWOsFheytRCoYWYPO/ObCTBGxT19Hc+yE=
+github.com/cenkalti/backoff v2.2.1+incompatible h1:tNowT99t7UNflLxfYYSlKYsBpXdEet03Pg2g16Swow4=
+github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
+github.com/zorkian/go-datadog-api v2.30.0+incompatible h1:R4ryGocppDqZZbnNc5EDR8xGWF/z/MxzWnqTUijDQes=
+github.com/zorkian/go-datadog-api v2.30.0+incompatible/go.mod h1:PkXwHX9CUQa/FpB9ZwAD45N1uhCW4MT/Wj7m36PbKss=
