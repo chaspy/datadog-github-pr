@@ -13,6 +13,15 @@ import (
 	"golang.org/x/oauth2"
 )
 
+type PR struct {
+	Number             *int
+	Labels             []*github.Label
+	User               *string
+	Assignee           *string
+	Assignees          []*string
+	RequestedReviewers []*github.User
+}
+
 func main() {
 	err := run()
 	if err != nil {
@@ -21,15 +30,6 @@ func main() {
 }
 
 func run() error {
-	type PR struct {
-		Number             *int
-		Labels             []*github.Label
-		User               *string
-		Assignee           *string
-		Assignees          []*string
-		RequestedReviewers []*github.User
-	}
-
 	apikey, appkey, err := readDatadogConfig()
 	if err != nil {
 		return fmt.Errorf("failed to read Datadog Config: %w", err)
@@ -45,16 +45,7 @@ func run() error {
 		return fmt.Errorf("failed to get PullRequests: %w", err)
 	}
 
-	prInfos := []PR{}
-
-	for _, pr := range prs {
-		prInfos = append(prInfos, PR{
-			Number:             pr.Number,
-			Labels:             pr.Labels,
-			User:               pr.User.Login,
-			RequestedReviewers: pr.RequestedReviewers,
-		})
-	}
+	prInfos := getPRInfos(prs)
 
 	ddClient := datadog.NewClient(apikey, appkey)
 
@@ -150,4 +141,19 @@ func getPullRequests(githubToken string) ([]*github.PullRequest, error) {
 	}
 
 	return prs, nil
+}
+
+func getPRInfos(prs []*github.PullRequest) []PR {
+	prInfos := []PR{}
+
+	for _, pr := range prs {
+		prInfos = append(prInfos, PR{
+			Number:             pr.Number,
+			Labels:             pr.Labels,
+			User:               pr.User.Login,
+			RequestedReviewers: pr.RequestedReviewers,
+		})
+	}
+
+	return prInfos
 }
