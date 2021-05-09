@@ -14,7 +14,7 @@ RUN go build \
     -o /go/bin/datadog-github-pr \
     -ldflags '-s -w'
 
-FROM alpine:3.13.0 as runner
+FROM alpine:3.13.5 as runner
 
 COPY --from=builder /go/bin/datadog-github-pr /app/datadog-github-pr
 
